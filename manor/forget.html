@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>忘记密码</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+</head>
+<body class="bgcolor paddingtop">
+
+<div class="navhead">
+    <a class="leftarr centerboth" href="javascript:" onclick="self.location=document.referrer;"><img src="images/leftarr.png" alt=""></a>
+    <p>忘记密码</p>
+</div>
+
+<div class="forgetform">
+    <ul>
+        <li>
+            <span>用户名</span>
+            <p><input type="text" placeholder="请输入用户名" name="userName"></p>
+        </li>
+
+        <li>
+            <span>手机号</span>
+            <p><input type="tel" placeholder="请输入手机号" name="phone"></p>
+            <a href="javascript:void(0)" onclick="getcode()" class="gettel">获取验证码</a>
+        </li>
+
+        <li>
+            <span>验证码</span>
+            <p><input type="number" placeholder="请输入验证码" name="code"></p>
+        </li>
+
+        <li>
+            <span>一级新密码</span>
+            <p><input type="password" placeholder="请输入6-20位任意数字与字母组合" name="password"></p>
+        </li>
+        <li>
+            <span>确认一级新密码</span>
+            <p><input type="password" placeholder="请输入6-20位任意数字与字母组合" name="repassword"></p>
+        </li>
+        <li>
+            <span>二级新密码</span>
+            <p><input type="password" placeholder="请输入6-20位任意数字与字母组合" name="secondpwd"></p>
+        </li>
+        <li>
+            <span>确认二级新密码</span>
+            <p><input type="password" placeholder="请输入6-20位任意数字与字母组合" name="resecondpwd"></p>
+        </li>
+
+    </ul>
+
+    <p class="weixInfor"></p>
+
+    <div class="btnlink"><a href="#">确认修改</a> </div>
+</div>
+
+
+
+</body>
+</html>
+<script>
+    var urldatalink = geturllink();
+    //获取温馨提示
+    $.ajax({
+        url:urldatalink.remind,
+        type:"post",
+        data:{id:20},
+        success:function(data){
+            $(".weixInfor").html(data.data.content);
+			if(data.status==3){
+				login();
+			}
+			if(data.status==2){
+					layer.open({
+					content: data.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+        }
+    })
+    //获取验证码
+    var lockl =true;var wait=120;
+    function getcode(){
+        var userName=$("input[name=userName]").val();
+        var phone=$("input[name=phone]").val();
+        var code=$("input[name=code]").val();
+        if(userName==''||userName.length==0){
+            layer.open({
+                content: "请填写用户名",
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        if(phone==''||phone.length==0){
+            layer.open({
+                content: "请填写手机号",
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        //倒计时
+
+
+
+
+        $.ajax({
+            url:urldatalink.getCode,
+            data:{username:userName,phone:phone},
+            type:"post",
+            success:function(data){
+                if(data.status==1){
+                    if(!lockl) {
+                        return false;
+                    }else{
+                        lockl = false;
+                    }
+                    var jishi = setInterval(function() {
+                        wait--;
+                        $('.gettel').html("重新发送(" + wait + ")");
+                        if(wait==0){
+                            clearInterval(jishi);
+                            $('.gettel').html("获取验证码");
+                            lockl = true;
+                            wait=120;
+                        }
+                    },1000);
+                    layer.open({
+                        content: '验证码已发送，注意查收',
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                    return false;
+                }else{
+                    layer.open({
+                        content: data.msg,
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                    return false;
+                }
+            }
+        })
+    }
+    $(".btnlink").click(function(){
+        var userName=$("input[name=userName]").val();
+        var phone=$("input[name=phone]").val();
+        var code=$("input[name=code]").val();
+        if(userName==''||userName.length==0){
+            layer.open({
+                content: "请填写用户名",
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        if(phone==''||phone.length==0){
+            layer.open({
+                content: "请填写手机号",
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        if(code==''||code.length==0){
+            layer.open({
+                content: "请填写验证码",
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        var loading = layer.open({type: 2,shadeClose:false});
+        $.ajax({
+            url:urldatalink.forget,
+            type:"post",
+            data:{
+                phone:phone,
+                code:code,
+                password:$("input[name=password]").val(),
+                repassword:$("input[name=repassword]").val(),
+                secondpwd:$("input[name=secondpwd]").val(),
+                resecondpwd:$("input[name=resecondpwd]").val(),
+            },
+            success:function(data){
+                layer.close(loading);
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 2 //2秒后自动关闭
+                });
+                if(data.status==1){
+                    location.href="login.html";
+                }
+            }
+        })
+    })
+</script>

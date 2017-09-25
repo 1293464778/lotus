@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>种子转荷花</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+</head>
+<body class="bgcolor paddingtop">
+
+<div class="navhead">
+    <a class="leftarr centerboth" href="bargain.html"><img src="images/leftarr.png" alt=""></a>
+    <p>种子转荷花</p>
+</div>
+
+
+<div class="guosbox">
+    <div class="guosbbx">
+        <ul>
+            <li>
+                <span>种子余量</span>
+                <p class="wei_input"><input type="number"  readonly name="seed"></p>
+            </li>
+
+            <li>
+                <span>兑换数量</span>
+                <p class="wei_input"><input type="number" placeholder="请输入100的整数倍" name="sale_num"></p>
+            </li>
+        </ul>
+        <p class="weixInfor"></p>
+        <div class="btnlink"><a href="javascript:;">确认兑换</a> </div>
+    </div>
+
+</div>
+<script type="text/javascript" src="js/login.js"></script>
+<script>
+    var urldatalink = geturllink();
+    $(".weixInfor").html(localStorage.getItem("change_remind"));
+    //获取种子余量
+    $.ajax({
+        url:urldatalink.getSeed,
+        type:"get",
+        data:{userAccessToken:localStorage.getItem('userAccessToken')},
+        success:function(data){
+            if(data.status==1){
+                $("input[name=seed]").val(data.data);
+            }
+			if(data.status==3){
+				login();
+			}
+			if(data.status==2){
+					layer.open({
+					content: data.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+        }
+    })
+    //提交
+    $(".btnlink").click(function(){
+
+        var sale_num=$("input[name=sale_num]").val();
+        if(sale_num==''||sale_num==0){
+            layer.open({
+                content: "请输入兑换数量且数量大于0",
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        var loading = layer.open({type: 2,shadeClose:false});
+        $.ajax({
+            url:urldatalink.seedTofruit,
+            type:"post",
+            data:{userAccessToken:localStorage.getItem('userAccessToken'),seed_num:sale_num},
+            success:function(data){
+                layer.close(loading);
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 4 //2秒后自动关闭
+                });
+                if(data.status==1){
+                    location.href="change_notes.html";
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>我的花园</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/doT.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+</head>
+<body class="bgcolor paddingtop homebg">
+<div class="navhead">
+    <a class="leftarr centerboth" href="javascript:history.go(-1)"><img src="images/leftarr.png" alt=""></a>
+    <p></p>
+</div>
+<div class="bodybx">
+
+
+<!--头部信息展示-->
+<div class="tophom clearfix">
+    <script id="intertmpl" type="text/x-dot-template">
+        <ul>
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav1.png" alt=""></b>
+                    <div class="thtext">
+                        <p>总量:<span>{{=it.zong}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav2.png" alt=""></b>
+                    <div class="thtext">
+                        <p>肥料:<span>{{=it.totalFertilizer}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav3.png" alt=""></b>
+                    <div class="thtext">
+                        <p>花仙子:<span>{{=it.fairy}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav4.png" alt=""></b>
+                    <div class="thtext">
+                        <p>播种:<span>{{=it.totalNum}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav5.png" alt=""></b>
+                    <div class="thtext">
+                        <p>蜂蜜:<span>{{=it.honey}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav6.png" alt=""></b>
+                    <div class="thtext">
+                        <p>花精灵:<span>{{=it.wizard}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav7.png" alt=""></b>
+                    <div class="thtext">
+                        <p>仓库:<span>{{=it.houseFruit}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav8.png" alt=""></b>
+                    <div class="thtext">
+                        <p>总生长:<span>{{=it.totalGrow}}</span></p>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav9.png" alt=""></b>
+                    <div class="thtext">
+                        <p>花天使:<span>{{=it.angel}}</span></p>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </script>
+</div>
+
+<!--等级-->
+<div class="levelbx">
+    <img src="images/level.png" alt="">
+    <p>贫农</p>
+</div>
+
+
+<!--水池-->
+<div class="shuichi">
+    <div class="shuichibx">
+        <ul>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+            <li><a href="javascript:void(0)"></a> </li>
+        </ul>
+    </div>
+</div>
+
+
+<!--花仙子-->
+<div class="huaxian">
+    <ul>
+        <li><a class="" href="javascript:void(0)"><img src="images/huaxianzi.png" alt=""></a></li>
+        <li><a class="" href="javascript:void(0)"><img src="images/huaxianzi.png" alt=""></a></li>
+        <li><a class="" href="javascript:void(0)"><img src="images/huaxianzi.png" alt=""></a></li>
+        <li><a class="" href="javascript:void(0)"><img src="images/huaxianzi.png" alt=""></a></li>
+    </ul>
+</div>
+
+<!--花精灵-->
+<div class="huajinl">
+    <p><a href="#"><img src="images/huajingling.png" alt=""></a> </p>
+</div>
+<!--花天使-->
+<div class="huatianshi">
+    <p><a href="#"><img src="images/huatianshi.png" alt=""></a> </p>
+</div>
+<!--采蜜大师-->
+<div class="caimidas">
+    <p><a href="buycaimi.html"><img src="images/caimidashi.png" alt=""></a> </p>
+</div>
+
+
+<!--底部导航-->
+<div class="foothmbg">
+    <ul>
+        <li data-zt="0"><a class="centerboth" href="javascript:void(0)"><img src="images/anav1.png" alt=""></a></li>
+        <li data-zt="1"><a class="centerboth" href="javascript:void(0)"><img src="images/anav2.png" alt=""></a></li>
+        <li data-zt="2"><a class="centerboth" href="javascript:void(0)"><img src="images/anav3.png" alt=""></a></li>
+        <li data-zt="3"><a class="centerboth" href="javascript:void(0)"><img src="images/anav4.png" alt=""></a></li>
+        <li data-zt="4"><a class="centerboth" href="javascript:void(0)"><img src="images/anav5.png" alt=""></a></li>
+        <li data-zt="5"><a class="centerboth" href="javascript:void(0)"><img src="images/anav6.png" alt=""></a></li>
+    </ul>
+</div>
+
+<!--播种时弹窗-->
+<div class="bgbalck" style="display: none"></div>
+<div class="bozalert" style="display: none">
+    <h2>确定要播种第<span></span>块地？</h2>
+    <p><input type="number" placeholder="请输入播种数量" onkeyup= "if(!/^\d+(\.\d{0,2})?$/.test(this.value)){if(this.value!=''){layer.open({content: '只能输入数字，小数点后只能保留两位',btn: '我知道了'});this.value='';}}"></p>
+
+    <div class="btnalert">
+        <a class="bozbtn" href="#">播种</a>
+        <a class="quxiao" href="#">取消</a>
+    </div>
+</div>
+
+
+</div>
+
+<script type="text/javascript" src="js/login.js"></script>
+
+<script>
+$('.foothmbg').find('li').click(function(){
+   if($(this).hasClass('cur')){
+       $(this).removeClass('cur');
+   }else {
+       $(this).addClass('cur').siblings('li').removeClass('cur');
+   }
+});
+
+
+$('.bozalert .quxiao').click(function(){
+    $('.bozalert').hide();
+    $('.bgbalck').hide();
+});
+
+
+
+//数据绑定
+var urldatalink = geturllink();
+var homedata,landnum;
+var token = tokenmake();
+var login_phone = localStorage.getItem('login_phone');
+var login_name = localStorage.getItem('login_name');
+$('.navhead p').html(login_name+'('+login_phone+')');
+$('title').html(login_name+'('+login_phone+')');
+
+
+var userAccessToken = localStorage.getItem('userAccessToken');
+var loading = layer.open({type: 2});
+var tmpl = doT.template($("#intertmpl")[0].text);
+
+
+var kaiken_layer;
+function intedate(){
+    var qianming = signaturetik(('token='+token),('userAccessToken='+userAccessToken));
+    $.ajax({
+        url: urldatalink.Garden,
+        type: 'get',
+        dataType:'json',
+        data: {
+            token: token,
+            signature: qianming,
+            userAccessToken: userAccessToken
+
+        },
+        success: function(ret) {
+            layer.close(loading);
+            layer.close(kaiken_layer);
+			if(ret.status==3){
+				login();
+			}
+			if(ret.status==2){
+					layer.open({
+					content: ret.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+            if(ret.status==1){
+
+                homedata = ret.data;
+                landnum =homedata.landNum;
+                homedata.title=homedata.userName+homedata.phone;
+                homedata.zong = (parseFloat(ret.data.houseFruit) + parseFloat(ret.data.totalNum)).toFixed(2);
+
+                // 将数据扔进templ中。并在DIV中显示出来
+                $(".tophom").html(tmpl(homedata));
+
+                levelshow();//等级数据展示
+                indland(ret.data);
+            }else {
+                layer.open({
+                    content: '初始化失败',
+                    skin: 'msg',
+                    time: 2
+                });
+            }
+        }
+
+    })
+
+}
+
+intedate();
+
+//等级展示
+function levelshow(){
+    var leveldata = ['贫农','中农','富农','财主','大富豪','董事'];
+
+    localStorage.setItem('leveldata',leveldata);
+
+    var levelnum = homedata.level;
+    var htmllevel = leveldata[levelnum-1];
+    $('.levelbx').find('p').html(htmllevel);
+}
+//等级展示结束
+
+//地面初始化数据
+function indland(data_home){
+
+    //花天使
+    if(data_home.angel){
+        var hautianshi = data_home.angel;
+        if(hautianshi!=0){
+            $('.huatianshi').find('p').find('a').addClass('has');
+        }
+
+    }
+
+
+
+    //花精灵
+    if(data_home.wizard){
+        var huajinl = data_home.wizard;
+        if(huajinl!=0){
+            $('.huajinl').find('p').find('a').addClass('has');
+        }
+
+    }
+
+
+
+    //花仙子
+    if(data_home.fairy){
+        var daocaodata = data_home.fairy;
+        for(var j =0;j<daocaodata;j++){
+            $('.huaxian').find('li').eq(j).find('a').addClass('has');
+        }
+
+    }
+
+    //地面
+    if(data_home.user_land){
+        var arrland = data_home.user_land;
+        for(var i = 0;i < $('.shuichibx li').length; i++) {
+            if(arrland.length>0){
+                if(arrland[i]){
+                    var numland = arrland[i].landId-1;
+
+                    var sunfruit = arrland[i].fruitNum - arrland[i].baseNum;
+                    if(i == numland){
+                        if(sunfruit==0){
+                            $('body').find('.shuichibx li').eq(numland).find('a').html('<b></b>');
+                        }else {
+                            $('body').find('.shuichibx li').eq(numland).find('a').html("<b class='kai'></b>");
+                        }
+                    }
+                }else {
+                    $('body').find('.shuichibx li').eq(i).find('a').html('');
+                }
+
+            }
+
+
+
+        }
+    }
+
+
+}
+
+
+//点击水池执行相应操作
+$('body').on('click','.shuichibx li',function(){
+    var thisdi = $(this);
+    var xuanz;
+    $('.foothmbg li').each(function(){
+        if($(this).hasClass('cur')) {
+            xuanz = $(this).data('zt');
+        }
+    });
+
+
+
+    //点击土地显示果实数量
+    if($('.foothmbg li.cur').length==0){
+        if (thisdi.find('b').length>0){
+            var nodedom = thisdi;
+            var landid = nodedom.index()+1;
+            var arrdatab = arrdata_ch(homedata.user_land,landid);
+            if(arrdatab.fruitNum){
+                var hasfruit = arrdatab.fruitNum; //已有果实数量
+                layer.open({
+                    content: '荷花数量：'+hasfruit,
+                    skin: 'msg',
+                    time: 2
+                });
+            }
+
+        }
+    }
+
+
+    switch (xuanz)
+    {
+        /*开垦*/
+        case 0:
+            kaiken(thisdi);
+            break;
+
+        /*播种*/
+        case 1:
+            bozhong(thisdi);
+            break;
+
+
+        /*施肥*/
+        case 2:
+            shifei(thisdi);
+            break;
+
+        /*收割*/
+        case 3:
+            shouge(thisdi);
+            break;
+
+        /*采蜜*/
+        case 4:
+            //caimi(thisdi);
+            break;
+
+        /*刷新*/
+        case 5:
+            //shuaxin();
+            break;
+
+    }
+
+
+
+
+});
+
+
+
+/*开垦*/
+function kaiken(node){
+
+    var qianming = signaturetik(('token='+token),('userAccessToken='+userAccessToken));
+    var urllink = urldatalink.open;
+    if(node.find('a b').length>0){
+        layer.open({
+            content: '这里已经开垦过了',
+            skin: 'msg',
+            time: 2
+        });
+    }else {
+        var indxu = node.index();
+        var jishu;
+        if(indxu==landnum) {
+            if(indxu<10){
+                jishu = homedata.ord_fee;
+            }else {
+                jishu = homedata.gold_fee;
+            }
+
+
+            if(parseFloat(homedata.houseFruit) >= parseFloat(jishu)){
+
+                kaiken_layer =layer.open({
+                    type: 2,
+                    content: '开垦中'
+                });
+                //node.find('a').append('<b></b>');
+                kaiken_a(token,qianming,userAccessToken,urllink);//开垦
+
+                landnum++;
+            }else {
+                layer.open({
+                    content: '您的荷花不够',
+                    skin: 'msg',
+                    time: 2
+                });
+            }
+        }else {
+
+            layer.open({
+                content: '请先种上一块水池',
+                skin: 'msg',
+                time: 2
+            });
+        }
+
+    }
+
+}
+//开垦果园接口请求
+function kaiken_a(token,qianming,userAccessToken,urllink){
+    $.ajax({
+        url: urllink,
+        type: 'get',
+        dataType:'json',
+        data: {
+            token: token,
+            signature: qianming,
+            userAccessToken: userAccessToken
+
+        },
+
+        success: function(ret, err) {
+
+            intedate();//初始化数据；
+
+            //indland(homedata);
+            if(ret.status!=1){
+                layer.open({
+                    content:ret.msg,
+                    skin: 'msg',
+                    time: 2
+                });
+            }
+        }
+    })
+
+}
+
+
+/*播种*/
+var nodedom1;
+var landid1;
+var maxapple1;//添加苹果最大值
+var is_full; //是否达到上限
+function bozhong(node){
+    if(!$('.bozalert').is(':hidden')){
+        $('.bozalert').hide();
+        return;
+    }
+    $('.bozalert').find('input').val('');
+    nodedom1 = node;
+    landid1 = node.index()+1;
+
+    if(nodedom1.find('a b').length==0){
+        layer.open({
+            content: '请选择有荷花的水池播种',
+            skin: 'msg',
+            time: 2
+        });
+    }else {
+
+        var arrdatab = arrdata_ch(homedata.user_land,landid1);
+        var hasfruit = arrdatab.fruitNum; //已有果实数量
+        is_full = arrdatab.is_full;//是否种满
+        if(is_full==1){
+            layer.open({
+                content: '荷花已达上限',
+                skin: 'msg',
+                time: 2
+            });
+            return;
+        }
+        $('.bozalert').show();
+        $('.bozalert>h2').find('span').html(landid1);
+
+        //最多还能加多少果子
+        var maxfruit;
+        var jishu1;
+        var indxuvv = node.index();
+        if(indxuvv<10){
+            jishu1 = homedata.ord_fee;
+        }else {
+            jishu1 = homedata.gold_fee;
+        }
+        maxfruit = (jishu1 * homedata.full_fee)-hasfruit;
+
+
+        //比较总量 能加苹果最大值
+        if(parseFloat(maxfruit) > parseFloat(homedata.houseFruit)){
+            maxapple1=homedata.houseFruit;
+        }else {
+            maxapple1=maxfruit;
+        }
+
+        $('.bozalert').find('input').attr('placeholder','最多'+maxapple1);
+
+
+    }
+
+
+}
+//播种
+$('.bozalert').find('.bozbtn').click(function(){
+    $('.bozalert').hide();
+    $('.foothmbg').show();
+    //判断
+    var inputval = $('.bozalert').find('input').val();
+    if(inputval==''){
+        inputval=0;
+        $('.bozalert').hide();
+        return;
+    }
+
+    var bozhong_layer =layer.open({
+        type: 2,
+        content: '播种中'
+    });
+    if(parseFloat(inputval) <= parseFloat(maxapple1)){
+        $('.bozalert').hide();
+        /*if (inputval!=0){
+
+        }*/
+        var qianming = signaturetik(('token='+token),('userAccessToken='+userAccessToken),('land_id='+landid1),('fruit_num='+inputval));
+
+
+        $.ajax({
+            url: urldatalink.sow,
+            type: "post",
+            data: {
+                token: token,
+                signature: qianming,
+                userAccessToken: userAccessToken,
+                land_id: landid1,
+                fruit_num: inputval
+            },
+            dataType: "json",
+            success: function(ret) {
+                nodedom1.find('a b').addClass('kai');
+                intedate();//初始化数据；
+                layer.close(bozhong_layer);
+                layer.open({
+                    content: ret.msg,
+                    skin: 'msg',
+                    time: 2
+                });
+            },
+            error: function() {
+                layer.close(bozhong_layer);
+            }
+        });
+
+
+
+    }else {
+        layer.close(bozhong_layer);
+        layer.open({
+            content: '输入荷花超出允许最大值',
+            skin: 'msg',
+            time: 2
+        });
+
+    }
+
+
+});
+
+
+/*施肥*/
+function shifei(node){
+
+    var userland_num = homedata.user_land;
+
+    if(homedata.totalFertilizer>0){
+        if(homedata.totalNum==0){
+            layer.open({
+                content: '请先开垦一块水池',
+                skin: 'msg',
+                time: 2
+            });
+            return;
+        }
+
+        var shifei_layer =layer.open({
+            type: 2,
+            content: '施肥中'
+        });
+        $('.foothmbg li').removeClass('cur');
+        var qianming = signaturetik(('token='+token),('userAccessToken='+userAccessToken));
+
+        $.ajax({
+            url: urldatalink.fertilize,
+            type: "get",
+            data: {
+                token: token,
+                signature: qianming,
+                userAccessToken: userAccessToken
+            },
+            dataType: "json",
+            success: function(ret) {
+                layer.close(shifei_layer);
+                intedate();//初始化数据；
+                layer.open({
+                    content: ret.msg,
+                    skin: 'msg',
+                    time: 2
+                });
+            },
+            error: function() {
+                layer.close(shifei_layer);
+            }
+        });
+
+
+
+    }else {
+        layer.open({
+            content: '暂无肥料',
+            skin: 'msg',
+            time: 2
+        });
+    }
+
+
+
+}
+
+
+/*收割*/
+var landid;
+var maxapple_l;//收割荷花最大值
+var nodedom;
+function shouge(node){
+
+    nodedom = node;
+    landid = node.index()+1;
+    if(nodedom.find('a b').length==0){
+        layer.open({
+            content: '请选择有荷花的水池收割',
+            skin: 'msg',
+            time: 2
+        });
+
+        return;
+    }/*else {
+        $('.shouge').show();
+        var arrdatab = arrdata_ch(homedata.user_land,landid);
+        var hasfruit = parseFloat(arrdatab.fruitNum); //已有果实数量
+        var jishu;
+        if(landid<11){
+            jishu = parseFloat(homedata.ord_fee);
+        }else {
+            jishu = parseFloat(homedata.gold_fee);
+        }
+        maxapple_l = (hasfruit - jishu).toFixed(2);
+
+        $('.shouge').find('input').attr('placeholder','最多'+maxapple_l);
+
+
+
+    }*/
+
+
+        if(!nodedom.find('a b').hasClass('kai')){
+            layer.open({
+                content: '请选择有荷花的水池收割',
+                skin: 'msg',
+                time: 2
+            });
+
+            return;
+        }
+        var shouge_layer =layer.open({
+            type: 2,
+            content: '收割中'
+        });
+
+
+        var qianming = signaturetik(('token='+token),('userAccessToken='+userAccessToken),('land_id='+landid));
+        //提交接口
+
+        $.ajax({
+            url: urldatalink.harvest,
+            type: "post",
+            data: {
+                token: token,
+                signature: qianming,
+                userAccessToken: userAccessToken,
+                land_id: landid
+            },
+            dataType: "json",
+            success: function(ret) {
+                nodedom.find('a b').removeClass('kai');
+                layer.close(shouge_layer);
+                intedate();//初始化数据；
+                layer.open({
+                    content: ret.msg,
+                    skin: 'msg',
+                    time: 2
+                });
+            },
+            error: function() {
+                layer.close(shouge_layer);
+            }
+        });
+
+
+
+
+
+}
+
+
+
+/*刷新*/
+function shuaxin(){
+    loading = layer.open({type: 2});
+    intedate();//初始化数据；
+    $('.bozalert').hide();
+    $('.foothmbg li').removeClass('cur');
+
+}
+/*采蜜*/
+function caimi(){
+    location.href ='friendlist.html';
+    $('.foothmbg li').removeClass('cur');
+}
+
+
+//一下是效果展示
+$('body').on('click','.foothmbg li',function(){
+
+    var indkk = $(this).data('zt');
+    switch (indkk)
+    {
+        /*采蜜*/
+        case 4:
+            caimi();
+            break;
+
+        /*刷新*/
+        case 5:
+            shuaxin();
+            break;
+    }
+});
+</script>
+</body>
+</html>

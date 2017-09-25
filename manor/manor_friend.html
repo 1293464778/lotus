@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>好友花园</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+    <script type="text/javascript" src="js/vue.js"></script>
+</head>
+<body class="bgcolor paddingtop homebg" >
+<div class="navhead">
+    <a class="leftarr centerboth" href="javascript:history.go(-1)"><img src="images/leftarr.png" alt=""></a>
+    <p class="fname"></p>
+</div>
+<div class="bodybx">
+<!--头部信息展示-->
+<div class="tophom clearfix" id="app">
+        <ul>
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav1.png" alt=""></b>
+                    <div class="thtext">
+                        <p>总量:<span class="total_num">{{total_num}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav2.png" alt=""></b>
+                    <div class="thtext">
+                        <p>肥料:<span class="fertilizer">{{totalFertilizer}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav3.png" alt=""></b>
+                    <div class="thtext">
+                        <p>花仙子:<span class="fairy">{{fairy}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav4.png" alt=""></b>
+                    <div class="thtext">
+                        <p>播种:<span class="totalNum">{{totalNum}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav5.png" alt=""></b>
+                    <div class="thtext">
+                        <p>蜂蜜:<span class="honey">{{honey}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav6.png" alt=""></b>
+                    <div class="thtext">
+                        <p>花精灵:<span class="wizard">{{wizard}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav7.png" alt=""></b>
+                    <div class="thtext">
+                        <p>仓库:<span class="houseFruit">{{houseFruit}}</span></p>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav8.png" alt=""></b>
+                    <div class="thtext">
+                        <p>总生长:<span class="totalGrow">{{totalGrow}}</span></p>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="clearfix">
+                    <b class="centerboth"><img src="images/htnav9.png" alt=""></b>
+                    <div class="thtext">
+                        <p>花天使:<span class="angel">{{angel}}</span></p>
+                    </div>
+                </a>
+            </li>
+        </ul>
+</div>
+
+<!--等级-->
+<div class="levelbx">
+    <img src="images/level.png" alt="">
+    <p class="level"></p>
+</div>
+
+
+<!--水池-->
+<div class="shuichi">
+    <div class="shuichibx">
+        <ul>
+        </ul>
+    </div>
+</div>
+
+
+<!--花仙子-->
+<div class="huaxian">
+    <ul>
+    </ul>
+</div>
+
+<!--花精灵-->
+<div class="huajinl">
+
+</div>
+<!--花天使-->
+<div class="huatianshi">
+
+</div>
+<!--采蜜大师-->
+<div class="caimidas">
+    <p><a href="buycaimi.html"><img src="images/caimidashi.png" alt=""></a> </p>
+</div>
+
+
+<!--底部导航-->
+<div class="foothmbg friendfoot">
+    <ul>
+        <li><a class="" href="javascript:void(0)"><img src="images/fnavb1.png" alt=""><p class="pick"></p></a></li>
+        <li><a class="" href="javascript:void(0)" onclick="pick(this)"><img src="images/fnavb2.png" alt=""><p>采蜜</p></a></li>
+    </ul>
+</div>
+</div>
+
+
+<script type="text/javascript" src="js/login.js"></script>
+<script>
+    var urldatalink = geturllink();
+    var level=['贫农','中农','富农','财主','大富豪','董事'];
+    var loading = layer.open({type: 2});
+    var vm=new Vue({
+        el:"#app",
+        data:{
+            total_num:'',
+            totalFertilizer:'',
+            fairy:'',
+            totalNum:'',
+            honey:'',
+            wizard:'',
+            houseFruit:'',
+            totalGrow:'',
+            angel:'',
+        },
+        methods:{
+
+        }
+    })
+    //获取数据
+    var is_do=0,pick_num=0;
+    $.ajax({
+        url:urldatalink.friendGarden,
+        type:"post",
+        data:{
+            userAccessToken:localStorage.getItem('userAccessToken'),
+            friend_id:localStorage.getItem('friendId')
+        },
+        success:function(data){
+            if(data.status==1){
+                layer.close(loading);
+                is_do=data.data.is_do;
+                pick_num=data.data.picknum;
+                vm.total_num=(parseFloat(data.data.houseFruit)+parseFloat(data.data.totalNum)).toFixed(2);
+                vm.totalFertilizer=data.data.totalFertilizer;
+                vm.fairy=data.data.fairy;
+                vm.angel=data.data.angel;
+                vm.wizard=data.data.wizard;
+                vm.totalNum=data.data.totalNum;
+                vm.honey=data.data.honey;
+                vm.houseFruit=data.data.houseFruit;
+                vm.totalGrow=data.data.totalGrow;
+                $(".level").html(level[parseInt(data.data.level)-1]);
+                $(".fname").html(data.data.userName+'('+data.data.phone+')');
+                var land=data.data.user_land;
+                //计算土地
+                var user_land='';
+                $.each(land,function(a,b){
+                    if(parseFloat(b.fruitNum)>parseFloat(b.baseNum)){
+                        user_land+='<li><a href="javascript:void(0)"><b class="kai"></b></a> </li>';
+                    }else{
+                        user_land+='<li><a href="javascript:void(0)"><b></b></a> </li>';
+                    }
+
+                });
+                for(var i=0;i<(15-parseInt(land.lenght));i++){
+                    user_land+='<li><a href="javascript:void(0)"></a> </li>';
+                }
+                $(".shuichibx").find("ul").html(user_land);
+                //计算花精灵
+                var wizard='';
+                for(var j=0;j<parseInt(data.data.wizard);j++){
+                    wizard+='<p><a href="#" class="has"><img src="images/huajingling.png" alt=""></a> </p>';
+                }
+                $(".huajinl").html(wizard);
+                //计算花天使
+                var angel='';
+                for(var j=0;j<parseInt(data.data.angel);j++){
+                    angel+='<p><a href="#" class="has"><img src="images/huatianshi.png" alt=""></a> </p>';
+                }
+                $(".huatianshi").html(angel);
+                //花仙子
+                var fairy='';
+                for(var j=0;j<parseInt(data.data.fairy);j++){
+                    fairy+='<li><a class="has" href="javascript:void(0)"><img src="images/huaxianzi.png" alt=""></a></li>';
+                }
+                $(".huaxian").find("ul").html(fairy);
+                //可采集数量
+                if(is_do==1){
+                    $(".pick").html("可采集:"+pick_num.toFixed(2));
+                }else{
+                    $(".pick").html("可采集:"+0.00);
+                }
+
+            }
+			if(data.status==3){
+				login();
+			}
+			if(data.status==2){
+					layer.open({
+					content: data.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+        }
+    });
+    //采蜜
+    function pick(v){
+        var loading = layer.open({type: 2});
+        $(v).removeAttr("onclick");
+        if(is_do==0){
+            layer.close(loading);
+            layer.open({
+                content: "抱歉，没有蜂蜜可以采啦",
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+
+        }else{
+            if(pick_num>0){
+                $.ajax({
+                    url:urldatalink.pick,
+                    type:"post",
+                    data:{
+                        userAccessToken:localStorage.getItem('userAccessToken'),
+                        friend_id:localStorage.getItem('friendId')
+                    },
+                    success:function(data){
+                        layer.close(loading);
+                        layer.open({
+                            content: data.msg,
+                            skin: 'msg',
+                            time: 2 //2秒后自动关闭
+                        });
+                        $(".pick").html("可采集:"+0.00);
+                    }
+                })
+            }else{
+                layer.close(loading);
+                layer.open({
+                    content: "抱歉，没有蜂蜜可以采啦",
+                    skin: 'msg',
+                    time: 2 //2秒后自动关闭
+                });
+            }
+        }
+        $(v).attr("onclick","pick(this)");
+    }
+</script>
+</body>
+</html>

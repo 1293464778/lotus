@@ -1,0 +1,160 @@
+<extend name="Public:base" />
+
+<!-- 标题 -->
+<block name="title">
+    <title>信息列表</title>
+</block>
+
+<block name="stylejs">
+<style>
+.form-group {
+    margin-bottom: 15px;
+    width: 40%;
+    display: inline-block;
+}
+.form-group label{
+    word-break:keep-all;
+    white-space:nowrap;
+}
+</style>
+</block>
+
+<!-- 面包屑导航 -->
+<block name="navigation">
+    <section class="content-header">
+        <h1>停车统计<small></small></h1>
+        <ol class="breadcrumb">
+            <li><a href="{:U('Admin/Index/index')}"><i class="fa fa-dashboard"></i> 主页</a></li>
+            <li class="active">数据统计</li>
+        </ol>
+    </section>
+</block>
+
+<!-- 内容 -->
+<block name="content">
+<!-- Custom Tabs -->
+<div class="nav-tabs-custom">
+    
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">停车统计</a></li>
+        </ul>
+    
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1" style="overflow:hidden">
+                    <div class="form-group">
+                        <label for="username">订单编号：</label>
+                        {$order.orderId}
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">停&nbsp;&nbsp;车&nbsp;&nbsp;场：</label>
+                        {$order.province}&nbsp;{$order.city}&nbsp;{$order.area}&nbsp;{$order.parkName}
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">入位时间：</label>
+                        {$order.addTime|date='Y-m-d H:i:s', ###}
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">车位号码：</label>
+                        {$order.position}
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">出位时间：</label>
+                        <if condition="$order['status'] neq 0">{$order.endTime|date='Y-m-d H:i:s', ###}</if>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">车牌号码：</label>
+                        {$order.carId}
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">支付金额：</label>
+                        <if condition="$order['status'] neq 0">{$order.money}元</if>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">车牌颜色：</label>
+                        {$order.color}
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label>
+                        <eq name="order.status" value="0">停车中</eq>
+                        <eq name="order.status" value="1">已完成</eq>
+                        <eq name="order.status" value="-1">已逃单</eq>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">车辆类型：</label>
+                        {$order.typeName}
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">添加人：</label>
+                        {$order.addUser}
+                    </div>
+                     <div class="form-group">
+                        <label for="mobile">收费人：</label>
+                        {$order.addUser}
+                    </div>
+                    <div class="form-group" style="float: left;">
+                        <label for="mobile">现场照片：</label><br>
+                        <notempty name="order.image1"><a href="{$order.image1}" target="_blank"><img src="{$order.image1}" width="250px", height="200px" style="margin-bottom:5px;"></a><br></notempty>
+                        <notempty name="order.image2"><a href="{$order.image2}" target="_blank"><img src="{$order.image2}" width="250px", height="200px" style="margin-bottom:5px;"></a></notempty>
+                        <notempty name="order.image3"><a href="{$order.image3}" target="_blank"><img src="{$order.image3}" width="250px", height="200px" style="margin-bottom:5px;"></a></notempty>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">&nbsp;&nbsp;取车照片：</label><br>
+                        <if condition="$order['status'] neq 0">
+                        <notempty name="order.evidence1"><a href="{$order.evidence1}" target="_blank"><img src="{$order.evidence1}" width="250px", height="200px" style="margin-bottom:5px;"></a></notempty>
+                        </if>
+                    </div>
+        </div><!-- /.tab-pane -->
+ 
+    </div><!-- /.tab-content -->
+</div><!-- nav-tabs-custom -->
+ 
+
+</block>
+
+<!-- js -->
+<block name="js">
+     
+    <script type="text/javascript">
+        $(function () {
+            
+        });
+  
+        //表单提交
+        $(document)
+           .ajaxStart(function(){
+               $("button:submit").addClass("btn-default").removeClass('btn-primary').attr("disabled", true);
+           })
+           .ajaxStop(function(){
+               $("button:submit").removeClass("btn-default").addClass("btn-primary").attr("disabled", false);
+           });
+
+        $("form").submit(function(){
+            
+            var self = $(this);
+            $.post(self.attr("action"), self.serialize(), success, "json");
+            return false;
+
+            function success(data){
+                if(data.status){
+                    layer.msg(data.msg, {
+                        icon:1,
+                        offset: 0,
+                        shift: 0,
+                        time:1500
+                    },function(){
+                        //window.location.reload();//刷新当前页面 ;
+                    });
+                } else {
+                    layer.msg(data.msg, {
+                        icon:0,
+                        offset: 0,
+                        shift: 6,
+                        time:1500
+                    }); 
+                    
+                }
+            }
+        });
+    </script>
+
+</block>

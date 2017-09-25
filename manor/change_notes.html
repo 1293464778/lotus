@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>转花记录</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+    <style>
+        html,body {
+            height: 100%;
+        }
+        #wrapper {
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+    </style>
+</head>
+<body class="bgcolor paddingtop">
+
+<div class="navhead">
+    <a class="leftarr centerboth" href="javascript:" onclick="self.location=document.referrer;"><img src="images/leftarr.png" alt=""></a>
+    <p>转花记录</p>
+</div>
+
+
+<div id="wrapper">
+    <div id="scroller" class="jilubxx">
+        <div id="pullDown" style="display: none">
+            <span class="pullDownLabel">下拉刷新</span>
+        </div>
+        <p class="zanwu">暂无记录</p>
+        <div class="notesbx zhuanhnote">
+            <ul>
+            </ul>
+
+        </div>
+
+        <div id="pullUp">
+            <span class="pullUpLabel">加载更多</span>
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript" src="js/iscroll.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+<script>
+    var urldatalink = geturllink();
+    var page=1,page_num=10;
+    function log(){
+        $.ajax({
+            url:urldatalink.seedList,
+            type:"post",
+            data:{
+                userAccessToken:localStorage.getItem('userAccessToken'),
+                page:page,
+                page_num:page_num
+            },
+            success:function(data){
+                if(data.status==1){
+                    if(data.data.length==0&&page==1){
+                        $("p.zanwu").show();
+                    }else{
+                        var html='';
+                        $.each(data.data,function(a,b){
+                            html+='<li><p><span>种子余量：<b>'+b.changeNum+'</b></span><span>兑换数量：<b>'+b.fruitNum+'</b></span></p><p><span>'+b.createTime+'</span><span></span></p></li>';
+                        });
+                        $("ul").append(html);
+                    }
+
+                }
+				if(data.status==3){
+				login();
+			}
+			if(data.status==2){
+					layer.open({
+					content: data.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+            }
+        })
+    }
+    log();
+    var myScroll,
+            pullDownEl, pullDownOffset,
+            pullUpEl, pullUpOffset,
+            generatedCount = 0;
+
+    /**
+     * 下拉刷新 （自定义实现此方法）
+     * myScroll.refresh();		// 数据加载完成后，调用界面更新方法
+     */
+    /*function pullDownAction () {
+     setTimeout(function () {
+
+
+     myScroll.refresh();		//数据加载完成后，调用界面更新方法
+     }, 1000);
+     }*/
+
+
+    /**
+     * 滚动翻页 （自定义实现此方法）
+     * myScroll.refresh();		// 数据加载完成后，调用界面更新方法
+     */
+    function pullUpAction () {
+        $('#pullUp').show();
+        setTimeout(function () {
+            log();
+            myScroll.refresh();		// 数据加载完成后，调用界面更新方法
+        }, 1000);
+    }
+
+    /**
+     * 初始化iScroll控件
+     */
+    function loaded() {
+        pullDownEl = document.getElementById('pullDown');
+        pullDownOffset = pullDownEl.offsetHeight;
+        pullUpEl = document.getElementById('pullUp');
+        pullUpOffset = pullUpEl.offsetHeight;
+
+        myScroll = new iScroll('wrapper', {
+            scrollbarClass: 'myScrollbar', /* 重要样式 */
+            useTransition: false, /* 此属性不知用意，本人从true改为false */
+            topOffset: pullDownOffset,
+            onRefresh: function () {
+                if (pullDownEl.className.match('loading')) {
+                    //pullDownEl.className = '';
+                   //pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
+                } else if (pullUpEl.className.match('loading')) {
+                    pullUpEl.className = '';
+                    pullUpEl.querySelector('.pullUpLabel').innerHTML = '';
+                }
+            },
+            onScrollMove: function () {
+                if (this.y > 5 && !pullDownEl.className.match('flip')) {
+                    //pullDownEl.className = 'flip';
+                    //pullDownEl.querySelector('.pullDownLabel').innerHTML = '松手开始更新...';
+                    this.minScrollY = 0;
+                } else if (this.y < 5 && pullDownEl.className.match('flip')) {
+                    //pullDownEl.className = '';
+                    //pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
+                    //this.minScrollY = -pullDownOffset;
+                } else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
+                    pullUpEl.className = 'flip';
+                    pullUpEl.querySelector('.pullUpLabel').innerHTML = '松手开始更新...';
+                    this.maxScrollY = this.maxScrollY;
+                } else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
+                    pullUpEl.className = '';
+                    pullUpEl.querySelector('.pullUpLabel').innerHTML = '';
+                    this.maxScrollY = pullUpOffset;
+                }
+            },
+            onScrollEnd: function () {
+                if (pullDownEl.className.match('flip')) {
+                    //pullDownEl.className = 'loading';
+                    //pullDownEl.querySelector('.pullDownLabel').innerHTML = '加载中...';
+                   // pullDownAction();	// Execute custom function (ajax call?)
+                } else if (pullUpEl.className.match('flip')) {
+                    pullUpEl.className = 'loading';
+                    pullUpEl.querySelector('.pullUpLabel').innerHTML = '加载中...';
+                    pullUpAction();	// Execute custom function (ajax call?)
+                }
+            }
+        });
+
+        setTimeout(function () { document.getElementById('wrapper').style.left = '0'; }, 800);
+    }
+
+    //初始化绑定iScroll控件
+    document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+    document.addEventListener('DOMContentLoaded', loaded, false);
+</script>
+</body>
+</html>

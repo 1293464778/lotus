@@ -1,0 +1,213 @@
+<extend name="Public:base" />
+
+<!-- 标题 -->
+<block name="title">
+    <title>信息列表</title>
+</block>
+
+<!-- 面包屑导航 -->
+<block name="navigation">
+    <section class="content-header">
+        <h1>停车统计<small></small></h1>
+        <ol class="breadcrumb">
+            <li><a href="{:U('Admin/Index/index')}"><i class="fa fa-dashboard"></i> 主页</a></li>
+            <li class="active">数据统计</li>
+        </ol>
+    </section>
+</block>
+
+
+<!-- 内容 -->
+<block name="content">
+    <!-- Custom Tabs -->
+    <div class="nav-tabs-custom">
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">停车统计</a></li>
+            <div style="float:right;font-size: 1.5em;margin-top: 10px;margin-right: 20px;">
+                共计：<font id="totalNum" style="color: #00C0EF;">0</font>&nbsp;次，
+                <font id="totalMoney" style="color: #00C0EF;">0</font>&nbsp;元
+            </div>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-12">
+                        <form class="form-inline pull-right clearfix" id="search-form">
+                            <div class="input-group" style="width:150px;">
+                                <select name="status" class="form-control">
+                                    <option value="">全部</option>
+                                    <option value="0">停车中</option>
+                                    <option value="1">已完成</option>
+                                    <option value="-1">已逃单</option>
+                                </select>
+                            </div>
+                            <div class="input-group" style="width:150px;">
+                                <input type="text" class="form-control" name="startTime" id="startTime" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" placeholder="入位开始时间">
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="endTime" id="endTime" onclick="laydate({istime: true, format: 'YYYY-MM-DD'})" placeholder="入位结束时间" style="width:150px;">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-info btn-flat" type="button" id ="search-btn" >搜索</button>
+                                </span>
+                            </div>
+                            <div class="input-group">
+                                <button class="btn btn-info btn-flat" type="button" id="search-clear">重置</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- datatable -->
+                <table id="example" class="table table-striped table-bordered table-hover" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>订单编号</th>
+                            <th>停车场</th>
+                            <th>车位号码</th>
+                            <th>车牌号码</th>
+                            <th>车辆类型</th>
+                            <th>入位时间</th>
+                            <th>出位时间</th>
+                            <th>支付金额</th>
+                            <th>订单状态</th>
+                            <th style="text-align:center;padding-right: 8px;width:50px;">操作</th>
+                        </tr>
+                    </thead>
+
+                </table>
+                <!-- /datatable -->
+
+            </div>
+            <!-- /.tab-pane -->
+
+        </div>
+        <!-- /.tab-content -->
+    </div>
+    <!-- nav-tabs-custom -->
+
+</block>
+
+<!-- js -->
+<block name="js">
+    <!-- page script -->
+    <script src="__JS__/dataTables.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var table = null;
+        $(document).ready(function() {
+
+            table = $('#example')
+            .dataTable({
+                "processing": true, //加载提示
+                "serverSide": true, //服务端模式
+                "ajax": {
+                    "url": "{:U('Admin/Order/car', array('id'=>$id))}",
+                    "type": "POST",
+                    "dataSrc":function(result){
+                        $("#totalMoney").html(result.totalMoney);
+                        $("#totalNum").html(result.totalNum);
+                        return result.data;
+                    }
+//                    "data": {
+//                        'mycolumns': ['orderId', 'parkName', 'position', 'carId', 'typeName', 'addTime', 'endTime', 'money', 'status'],
+//                    },
+                },
+                //展示的列
+                "columns": [{
+                    "data": "orderId"
+                }, {
+                    "data": "parkName"
+                }, {
+                    "data": "position"
+                }, {
+                    "data": "carId"
+                }, {
+                    "data": "typeName"
+                }, {
+                    "data": "addTime"
+                },{
+                    "data": "endTime"
+                }, {
+                    "data": "money"
+                },{
+                    "data": "status"
+                }, ],
+                //设置列排序
+                "order": [
+                    [0, "desc"]
+                ],
+                //列设置
+                "columnDefs": [{
+                        "targets": [1, 4],
+                        "orderable": false,
+                    },{
+                        "targets": [0],
+                        "render": function(data, type, row) {
+                            return '<a href="__ROOT__/index.php/Admin/Order/detail/id/'+row['orderId']+'" target="_blank">'+data +'</a>';
+                        },
+                    }, {
+                        "targets": [6],
+                        "orderable": false,
+                        "render": function(data, type, row) {
+                            if(row['status'] == 0){
+                                return '';
+                            }
+                            return data;
+                        },
+                    }, {
+                        "targets": [7],
+                        "orderable": false,
+                        "render": function(data, type, row) {
+                            if(row['status'] == 0){
+                                return '';
+                            }
+                            return data;
+                        },
+                    }, {
+                        "targets": [8],
+                        "orderable": true,
+                        "render": function(data, type, row) {
+                            if(row['status'] == 1){
+                                return '已完成';
+                            }
+                            if(row['status'] == -1){
+                                return '已逃单';
+                            }
+                            return '停车中';
+                        },
+                    }, {
+                        "targets": [9],
+                        "orderable": false,
+                        "render": function(data, type, row) {
+                            var btn = '<a href="__ROOT__/index.php/Admin/Order/detail/id/' + row['orderId'] + '" class="btn btn-primary btn-xs btn-flat" target="_blank">查看</a>';
+                            return btn;
+                        },
+                    },
+                ],
+            });
+
+            //搜索
+            $('#search-btn').on('click', function() {
+                table.api().search($('#search-form').serialize()).draw();
+            });
+            //清除搜索
+            $('#search-clear').on('click', function() {
+                document.getElementById("search-form").reset();
+                table.api().search('').draw();
+            });
+        });
+
+        document.onkeydown = function(e) {
+            var ev = document.all ? window.event : e;
+            if (ev.keyCode == 13) {
+                table.api().search($('#search-form').serialize()).draw();
+                return false;
+            }
+        }
+    </script>
+
+</block>

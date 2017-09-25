@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<block name="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body no-padding" id="main" style="height:400px;">
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Admin/js/echarts.min.js"></script>
+    <script>
+        var myChart = echarts.init(document.getElementById('main'));
+
+        option = {
+            title : {
+                text: '最近7天收益变化',
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['每天增长收益']
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap : false,
+                    data : {$data.date}
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+
+                }
+            ],
+            series : [
+                {
+                    name:'收益',
+                    type:'line',
+                    data:{$data.profit},
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+
+                },
+
+            ]
+        };
+
+        myChart.setOption(option);
+
+    </script>
+</block>
+</body>
+</html>

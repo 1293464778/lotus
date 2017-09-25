@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>订购验证码</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+</head>
+<body class="bgcolor paddingtop">
+
+<div class="navhead">
+    <a class="leftarr centerboth" href="javascript:history.go(-1)"><img src="images/leftarr.png" alt=""></a>
+    <p>订购验证码</p>
+</div>
+
+<div class="forgetform">
+    <div class="btnlink"><a href="javascript:void(0)">我要订购</a> </div>
+
+    <p class="weixInfor"></p>
+</div>
+
+<div class="bgbalck" style="display: none"></div>
+<!--订购弹层-->
+<div class="dinggou" style="display: none">
+    <div class="tantiti">
+        <p>您还未购买验证码</p>
+        <p class="fruit"></p>
+    </div>
+
+    <div class="taninput">
+        <p><input type="number" placeholder="请输入购买月数" name="month"></p>
+    </div>
+
+    <div class="tanbtn centerboth">
+        <a class="quxiao" href="#">取消</a>
+        <a class="queding" href="javascript:;" onclick="commit()">确定</a>
+    </div>
+</div>
+
+<script type="text/javascript" src="js/login.js"></script>
+<script>
+    var urldatalink = geturllink();
+    $(".weixInfor").html(localStorage.getItem("code_remind"));
+    //获取购买所需荷花数量
+    $.ajax({
+        url:urldatalink.getFruit,
+        type:"get",
+        success:function(data){
+            if(data.status==1){
+                $(".fruit").html("购买一个月只需"+data.data+"个荷花");
+            }
+			if(data.status==3){
+				login();
+			}
+			if(data.status==2){
+					layer.open({
+					content: data.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+        }
+    })
+    function commit(){
+        var month=$("input[name=month]").val();
+        if(month==''||month==0){
+            layer.open({
+                content: "请输入月数且至少为1个月",
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+
+        var loading = layer.open({type: 2,shadeClose:false});
+        $.ajax({
+            url:urldatalink.buyCode,
+            type:"post",
+            data:{userAccessToken:localStorage.getItem('userAccessToken'),month:month},
+            success:function(data){
+                layer.close(loading);
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 4 //2秒后自动关闭
+                });
+                $('.quxiao').click();
+            }
+        });
+    }
+    $('.btnlink').click(function(){
+        //判断是否订购
+        $.ajax({
+            url:urldatalink.isBuyCode,
+            type:"get",
+            data:{userAccessToken:localStorage.getItem('userAccessToken')},
+            success:function(data){
+                if(data.status==1){
+                    if(data.data.is_buy_code==1){
+                        layer.open({
+                            content: "你已经订购过",
+                            skin: 'msg',
+                            time: 2 //2秒后自动关闭
+                        });
+                    }else{
+                        $('.bgbalck').show();
+                        $('.dinggou').show();
+                    }
+                }
+            }
+        })
+
+    });
+
+    $('.bgbalck').click(function(){
+        $('.bgbalck').hide();
+        $('.dinggou').hide();
+    });
+    $('.quxiao').click(function(){
+        $('.bgbalck').hide();
+        $('.dinggou').hide();
+    });
+</script>
+</body>
+</html>

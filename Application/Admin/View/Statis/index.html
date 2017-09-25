@@ -1,0 +1,168 @@
+<extend name="Public:base" />
+
+<!-- 标题 -->
+<block name="title">
+    <title>定向订单统计</title>
+</block>
+
+<!-- 面包屑导航 -->
+<block name="navigation">
+    <section class="content-header">
+        <h1>定向订单统计<small></small></h1>
+        <ol class="breadcrumb">
+            <li><a href="{:U('Index/index')}"><i class="fa fa-dashboard"></i> 主页</a></li>
+        </ol>
+    </section>
+</block>
+
+<!-- 内容 -->
+<block name="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">定向订单统计</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding" id="main" style="height:400px;">
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+
+</block>
+
+<!-- js -->
+<block name="js">
+    <script src="__PUBLIC__/Admin/js/echarts.min.js"></script>
+    <script>
+        var myChart = echarts.init(document.getElementById('main'));
+
+        option = {
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            toolbox:{
+                show:true,
+                orient: 'horizontal',
+                itemSize: 20,
+                itemGap: 10,
+                showTitle: true,
+                feature:{
+                    myTool1:{
+                        show: true,
+                        title: '按日统计',
+                        icon: 'image://__PUBLIC__/Admin/images/ri1.png',
+                        onclick: function (){
+                            search(1, 'image:///public/Admin/images/ri.png');
+                        }
+                    },
+                    myTool2:{
+                        show: true,
+                        title: '按月统计',
+                        icon: 'image://__PUBLIC__/Admin/images/yue.png',
+                        onclick: function (){
+                            search(2, 'image:///public/Admin/images/yue1.png');
+                        }
+                    },
+                    myTool3:{
+                        show: true,
+                        title: '按年统计',
+                        icon: 'image://__PUBLIC__/Admin/images/nian.png',
+                        onclick: function (){
+                            search(3, 'image:///public/Admin/images/nian1.png');
+                        }
+                    },
+                },
+                right:40,
+            },
+            legend: {
+                data:['订单数量','订单交易额']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    data : {$data.date}
+        }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+                series : [
+            {
+                name:'订单数量',
+                type:'bar',
+                data:{$data.gotNum}
+            },
+            {
+                name:'订单交易额',
+                        type:'bar',
+                    data:{$data.gotTotal}
+            },
+        ]
+        };
+
+        myChart.setOption(option);
+        var open = true;
+        var nowStatus = 1;
+        var optionImg = {
+            myTool1:{
+                before:'image:///public/Admin/images/ri.png',
+                after:'image:///public/Admin/images/ri1.png',
+            },
+            myTool2:{
+                before:'image:///public/Admin/images/yue.png',
+                after:'image:///public/Admin/images/yue1.png',
+            },
+            myTool3:{
+                before:'image:///public/Admin/images/nian.png',
+                after:'image:///public/Admin/images/nian1.png',
+            },
+        };
+        function search(status, img){
+            if(open == false){
+                return false;
+            }else{
+                if(nowStatus == status){
+                    return false;
+                }
+                open = false;
+                nowStatus = status;
+            }
+
+            $.post("{:U('getDirection')}", {'status': status}, success, 'json');
+            return false;
+            function success(res){
+                if(res.status){
+                    option.xAxis[0].data = jQuery.parseJSON(res.data.date);
+                    option.series[0].data = jQuery.parseJSON(res.data.gotNum);
+                    option.series[1].data = jQuery.parseJSON(res.data.gotTotal);
+                    // 图标样式变更
+                    for(x in optionImg){
+                        if(x == 'myTool'+status){
+                            option.toolbox.feature[x]['icon'] = optionImg[x]['after'];
+                        }else{
+                            option.toolbox.feature[x]['icon'] = optionImg[x]['before'];
+                        }
+                    }
+                    myChart.setOption(option);
+                }
+                open = true;
+            }
+        }
+    </script>
+</block>

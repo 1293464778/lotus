@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>计算用户每天收益</title>
+</head>
+<script src="__STATIC__/jQuery-2.1.4.min.js"></script>
+<script>
+    var i=0;
+    var page={$page_num};
+    var html='';
+    chat();
+
+    function chat()
+    {
+
+        if(i<page){
+            $.post("{:U('todayProfit')}",{i:i},function(data){
+                if(data.status==1){
+                    html+=data.info;
+                    html+='<br>';
+                    $("#myList").html(html);
+//                    document.write(data.info);
+                    i++;
+                    chat();
+                }else{
+                    html+=data.info;
+                    html+='<br>';
+                    $("#myList").html(html);
+//                    $("#myList").html(data.info);
+//                    document.write(data.info);
+                }
+
+            });
+        }else{
+
+        }
+
+    }
+</script>
+<body id="myList">
+
+</body>
+</html>

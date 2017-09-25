@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>交易中心</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+</head>
+<body class="bgcolor paddingtop paddingboot">
+<div class="navhead">
+    <p>交易中心</p>
+</div>
+
+<div class="jiaoyibxx">
+    <ul>
+        <li>
+            <a href="javascript:;" class="arrright" onclick="code()"><span class="centerboth"><img src="images/jiaoyinav1.png" alt=""></span><p>订购验证码</p></a>
+        </li>
+
+        <li>
+            <a href="password_two.html" class="arrright"><span class="centerboth"><img src="images/jiaoyinav2.png" alt=""></span><p>出售荷花</p></a>
+        </li>
+
+        <li>
+            <a href="sellw_notes.html" class="arrright"><span class="centerboth"><img src="images/jiaoyinav3.png" alt=""></span><p>委托出售记录</p></a>
+        </li>
+
+        <li>
+            <a href="sell_notes.html" class="arrright"><span class="centerboth"><img src="images/jiaoyinav4.png" alt=""></span><p>定向出售记录</p></a>
+        </li>
+
+        <li>
+            <a href="buy_notes.html" class="arrright"><span class="centerboth"><img src="images/jiaoyinav5.png" alt=""></span><p>购买记录</p></a>
+        </li>
+
+        <li>
+            <a href="password_two1.html" class="arrright"><span class="centerboth"><img src="images/jiaoyinav6.png" alt=""></span><p>种子转荷花</p></a>
+        </li>
+
+        <li>
+            <a href="change_notes.html" class="arrright"><span class="centerboth"><img src="images/jiaoyinav7.png" alt=""></span><p>种子转荷花记录</p></a>
+        </li>
+    </ul>
+</div>
+
+<div class="footnav">
+    <ul>
+        <li>
+            <a href="index.html">
+                <div class="footimg">
+                    <img src="images/footnav1.png" alt="">
+                    <img src="images/footnav1_h.png" alt="">
+                </div>
+                <p>花园管理</p>
+            </a>
+        </li>
+        <li>
+            <a href="growth.html">
+                <div class="footimg">
+                    <img src="images/footnav2.png" alt="">
+                    <img src="images/footnav2_h.png" alt="">
+                </div>
+                <p>生长记录</p>
+            </a>
+        </li>
+        <li class="cur">
+            <a href="#">
+                <div class="footimg">
+                    <img src="images/footnav3.png" alt="">
+                    <img src="images/footnav3_h.png" alt="">
+                </div>
+                <p>交易中心</p>
+            </a>
+        </li>
+        <li>
+            <a href="mycenter.html">
+                <div class="footimg">
+                    <img src="images/footnav4.png" alt="">
+                    <img src="images/footnav4_h.png" alt="">
+                </div>
+                <p>个人中心</p>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<script type="text/javascript" src="js/login.js"></script>
+<script>
+    var urldatalink = geturllink();
+    function code(){
+        //获取温馨提示
+        $.ajax({
+            url:urldatalink.remind,
+            type:"post",
+            data:{id:4},
+            success:function(data){
+                if(data.status==1){
+                    localStorage.setItem("code_remind",data.data.content);
+                    location.href="order.html";
+                }
+				if(data.status==3){
+				login();
+			}
+			if(data.status==2){
+					layer.open({
+					content: data.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<extend name="Public:base" />
+
+<!-- 标题 -->
+<block name="title">
+    <title>申请管理</title>
+</block>
+
+<!-- 面包屑导航 -->
+<block name="navigation">
+    <section class="content-header">
+        <h1>申请列表<small></small></h1>
+        <ol class="breadcrumb">
+            <li><a href="{:U('Admin/Index/index')}"><i class="fa fa-dashboard"></i> 主页</a></li>
+            <li class="active">申请管理</li>
+        </ol>
+    </section>
+</block>
+
+<!-- 内容 -->
+<block name="content">
+    <!-- Custom Tabs -->
+    <div class="nav-tabs-custom">
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">申请列表</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form class="form-inline pull-right clearfix" id ="search-form">
+                            <div class="input-group">
+                                <input name="num" class="form-control" id="num" autocomplete="off" placeholder="推荐者帐号">
+                            </div>
+                            <div class="input-group">
+                                <select name="status" class="form-control">
+                                    <option value="">请选择状态</option>
+                                    <option value="0">待处理</option>
+                                    <option value="1">申请通过</option>
+                                    <option value="2">申请拒绝</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-info btn-flat" type="button" id ="search-btn" >搜索</button>
+                                </span>
+                            </div>
+                            <div class="input-group">
+                                <button class="btn btn-info btn-flat" type="button" id ="search-clear" >重置</button>
+                            </div>
+                        </form>
+                        <i class='fa fa-fw fa-circle-o' style='color:grey;'></i>代表未处理
+                        <i class='fa fa-fw fa-check-circle' style='color:green;'></i>代表处理通过
+                        <i class='fa fa-fw fa-close' style='color:red;'></i>代表处理拒绝
+                    </div>
+                </div>
+
+                <!-- datatable -->
+                <table id="example" class="table table-striped table-bordered table-hover" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>推荐账号</th>
+                        <th>被推荐账号</th>
+                        <th>手机号</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>微信号</th>
+                        <th>支付宝号</th>
+                        <th>状态</th>
+                        <th>创建时间</th>
+                        <th>修改时间</th>
+                        <th style="text-align:center;padding-right: 8px;width:120px;">操作</th>
+                    </tr>
+                    </thead>
+
+                </table>
+                <!-- /datatable -->
+
+            </div>
+            <!-- /.tab-pane -->
+
+        </div>
+        <!-- /.tab-content -->
+    </div>
+    <!-- nav-tabs-custom -->
+
+</block>
+
+<!-- js -->
+<block name="js">
+    <!-- page script -->
+    <script src="__JS__/dataTables.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var table = null;
+        $(document).ready(function() {
+            table = $('#example').dataTable({
+                "processing": true, //加载提示
+                "serverSide": true, //服务端模式
+                "ajax": {
+                    "url": "{:U('Admin/Apply/index')}",
+                    "type": "POST",
+                    "data": {
+                        'mycolumns': ['id', 'userName', 'recommenName', 'phone', 'realName', 'sex', 'wechat','alipay','status','createTime','updateTime'],
+                    },
+                },
+                //展示的列
+                "columns": [{
+                    "data": "id"
+                }, {
+                    "data": "userName"
+                }, {
+                    "data": "recommenName"
+                }, {
+                    "data": "phone"
+                }, {
+                    "data": "realName"
+                }, {
+                    "data": "sex"
+                }, {
+                    "data": "wechat"
+                },{
+                    "data": "alipay"
+                },{
+                    "data": "status"
+                },{
+                    "data": "createTime"
+                },{
+                    "data": "updateTime"
+                },
+                ],
+                //设置列排序
+                "order": [
+                    [0, "desc"]
+                ],
+                //列设置
+                "columnDefs": [{
+                    "targets": [0,1,2,3,4,6,7,9,10],
+                    "orderable": false,
+                },{
+                    "targets": [5],
+                    "orderable": false,
+                    "render":function(data,type,row){
+                        if(data==0){
+                            return "未知";
+                        }
+                        if(data==1){
+                            return "男";
+                        }
+                        if(data==2){
+                            return "女";
+                        }
+                    }
+                },{
+                    "targets": [8],
+                    "orderable": false,
+                    "render":function(data,type,row){
+                        if(data==0){
+                            return "<i class='fa fa-fw fa-circle-o' style='color:grey;'></i>";
+                        }
+                        if(data==1){
+                            return "<i class='fa fa-fw fa-check-circle' style='color:green;'></i>";
+                        }
+                        if(data==2){
+                            return "<i class='fa fa-fw fa-close' style='color:red;'></i>";
+                        }
+
+                    }
+                },
+                    {
+                        "targets": [11],
+                        "orderable": false,
+                        "render": function(data, type, row) {
+                            if(row['status']==0){
+                                var btn = '<a href="__ROOT__/index.php/Admin/Apply/check/id/' + row['id'] + '" class="btn btn-primary btn-xs btn-flat" >同意</a>';
+                                btn += '<a href="javascript:;" class="btn btn-primary btn-xs btn-flat" onclick="reject('+row['id']+')">拒绝</a>';
+                                return btn;
+                            }else{
+                                return '已审核';
+                            }
+
+                        },
+                    },
+                ],
+            });
+
+            //搜索
+            $('#search-btn').on('click', function() {
+                table.api().search($('#search-form').serialize()).draw();
+            });
+            //清除搜索
+            $('#search-clear').on('click', function() {
+                document.getElementById("search-form").reset();
+                table.api().search('').draw();
+            });
+        });
+
+        document.onkeydown = function(e) {
+            var ev = document.all ? window.event : e;
+            if (ev.keyCode == 13) {
+                table.api().search($('#search-form').serialize()).draw();
+                return false;
+            }
+        }
+
+        function reject(id){
+            layer.confirm('确定拒绝该条申请记录吗？', {
+                btn: ['确认','取消'], //按钮
+                shade: false //不显示遮罩
+            }, function(){
+                _deleteFun(id);
+            }, function(){
+            });
+        }
+
+        /**
+         * 删除
+         * @param id
+         * @private
+         */
+        function _deleteFun(id) {
+
+            $.ajax({
+                url: "{:U('reject')}",
+                data: {"id": id},
+                type: "post",
+                success: function (data) {
+                    if (data.status) {
+                        layer.msg(data.info, {
+                            icon:1,
+                            offset: 0,
+                            shift: 0,
+                            time:1500
+                        },function(){
+                            table.api().draw(false);
+                        });
+                    } else {
+                        layer.msg(data.info, {
+                            icon:0,
+                            offset: 0,
+                            shift: 6,
+                            time:1500
+                        });
+                    }
+                },
+                error: function (error) {
+                    alert(data.info);
+                }
+            });
+        }
+    </script>
+
+</block>

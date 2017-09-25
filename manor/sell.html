@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>出售荷花</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+</head>
+<body class="bgcolor paddingtop">
+
+<div class="navhead">
+    <a class="leftarr centerboth" href="bargain.html"><img src="images/leftarr.png" alt=""></a>
+    <p>出售荷花</p>
+</div>
+<div class="guoshou">
+    <ul class="clearfix">
+        <li class="cur"><a href="javascript:void(0)">委托出售</a> </li>
+        <li><a href="javascript:void(0)">定向出售</a> </li>
+    </ul>
+</div>
+
+<div class="guosbox">
+    <div class="guosbbx">
+        <ul class="code">
+            <li>
+                <span>仓库荷花</span>
+                <p class="cang_apple"></p>
+            </li>
+
+            <li>
+                <span>出售数量</span>
+                <p class="wei_input"><input type="number" placeholder="数量为100--10000" name="sale_num"></p>
+            </li>
+        </ul>
+        <p class="weixInfor"></p>
+        <div class="btnlink"><a href="javascript:;" onclick="weituo()">确认出售</a> </div>
+    </div>
+
+
+    <div class="guosbbx" style="display: none">
+        <ul class="code">
+            <li>
+                <span>仓库荷花</span>
+                <p class="cang_apple"></p>
+            </li>
+            <li>
+                <span>出售数量</span>
+                <p class="din_input"><input type="number" placeholder="10的数倍" name="sale_num1"></p>
+            </li>
+            <li>
+                <span>目标会员号</span>
+                <p class="huinum"><input type="text" placeholder="请输入目标会员号" name="userName"></p>
+            </li>
+            <li>
+                <span>目标姓名</span>
+                <p class="huiname"><input type="text" placeholder="请输入目标姓名" name="realName"></p>
+            </li>
+
+        </ul>
+
+        <p class="weixInfor"></p>
+        <div class="btnlink"><a href="javascript:;" onclick="dingxiang()">确认出售</a> </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="js/login.js"></script>
+<script>
+    var urldatalink = geturllink();
+    $(".weixInfor").eq(0).html(localStorage.getItem("sell_remind"));
+    $(".weixInfor").eq(1).html(localStorage.getItem("sell1_remind"));
+    var flag=false;
+    //获取仓库荷花
+    $.ajax({
+        url:urldatalink.getNum,
+        type:"get",
+        data:{userAccessToken:localStorage.getItem('userAccessToken')},
+        success:function(data){
+            if(data.status==1){
+                $(".cang_apple").html(data.data.num);
+            }
+			if(data.status==3){
+				login();
+			}
+			if(data.status==2){
+					layer.open({
+					content: data.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+        }
+    })
+    //tab标签页切换
+    $('.guoshou li').click(function(){
+        $(this).addClass('cur').siblings('li').removeClass('cur');
+        var ind = $(this).index();
+        $('.guosbox').find('.guosbbx').eq(ind).show().siblings('.guosbbx').hide();
+
+    })
+    //委托出售
+    function weituo(){
+        var sale_num=$("input[name=sale_num]").val();
+        if(sale_num==''||sale_num.length==0||sale_num==0){
+            layer.open({
+                content: '请填写出售数量且至少为100',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        var loading = layer.open({type: 2,shadeClose:false});
+        $.ajax({
+            url:urldatalink.commission,
+            type:"post",
+            data:{
+                userAccessToken:localStorage.getItem('userAccessToken'),
+                sale_num:sale_num,
+                code:$("input[name=code]").val(),
+            },
+            success:function(data){
+
+                if(data.status==1){
+                    layer.open({
+                        content: data.msg,
+                        skin: 'msg',
+                        time: 2,//2秒后自动关闭
+                        end:function(){
+                            location.href="sellw_notes.html";
+                            layer.close(loading);
+                            $("input[name=sale_num1]").val('')
+                        }
+                    });
+
+                }else{
+                    layer.open({
+                        content: data.msg,
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+        })
+    }
+    //定向出售
+    function dingxiang(){
+        var sale_num=$("input[name=sale_num1]").val();
+        var userName=$("input[name=userName]").val();
+        var realName=$("input[name=realName]").val();
+        if(sale_num==''||sale_num.length==0||sale_num==0){
+            layer.open({
+                content: '请填写出售数量且至少为10',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        if(userName==''||userName.length==0){
+            layer.open({
+                content: '请填写会员号',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        if(realName==''||realName.length==0){
+            layer.open({
+                content: '请填写会员姓名',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        var loading = layer.open({type: 2,shadeClose:false});
+        $.ajax({
+            url:urldatalink.direction,
+            type:"post",
+            data:{
+                userAccessToken:localStorage.getItem('userAccessToken'),
+                sale_num:sale_num,
+                userName:userName,
+                realName:realName,
+                code:$("input[name=code]").val(),
+            },
+            success:function(data){
+
+                if(data.status==1){
+                    layer.open({
+                        content: data.msg,
+                        skin: 'msg',
+                        time: 2 ,//2秒后自动关闭
+                        end:function(){
+                            location.href="sell_notes.html";
+                            layer.close(loading);
+                            $("input[name=sale_num1]").val('')
+                        }
+                    });
+                }else{
+                    layer.open({
+                        content: data.msg,
+                        skin: 'msg',
+                        time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+        })
+    }
+
+</script>
+
+</body>
+</html>

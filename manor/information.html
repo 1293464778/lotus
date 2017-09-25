@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>个人资料</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+</head>
+<body class="bgcolor paddingtop">
+
+<div class="navhead">
+    <a class="leftarr centerboth" href="javascript:history.go(-1)"><img src="images/leftarr.png" alt=""></a>
+    <p>个人资料</p>
+</div>
+
+<div class="forgetform">
+    <ul>
+        <li>
+            <span>用户名</span>
+            <p><input type="text" placeholder="请填写用户名" name="userName"></p>
+        </li>
+
+        <li>
+            <span>手机号</span>
+            <p><input type="tel"  readonly name="phone"></p>
+        </li>
+
+        <li>
+            <span>性别</span>
+            <p class="newsex">
+                <label><input type="radio" name="sex" value="1"><span>男</span></label>
+                <label><input type="radio" name="sex" value="2"><span>女</span></label>
+            </p>
+        </li>
+
+        <li style="display: none">
+            <span>微信号</span>
+            <p><input type="text" placeholder="请输入微信号" name="wechat"></p>
+        </li>
+
+        <li style="display: none">
+            <span>支付宝</span>
+            <p><input type="text" placeholder="请输入支付宝账号" name="alipay"></p>
+        </li>
+
+    </ul>
+
+
+    <div class="btnlink"><a href="javascript:;">确认修改</a> </div>
+</div>
+
+
+
+</body>
+</html>
+<script type="text/javascript" src="js/login.js"></script>
+<script>
+    var urldatalink = geturllink();
+    $.ajax({
+        url:urldatalink.getUser,
+        type:"post",
+        data:{userAccessToken:localStorage.getItem('userAccessToken')},
+        success:function(data){
+            if(data.status==1){
+                $("input[name=userName]").val(data.data.userName);
+                $("input[name=phone]").val(data.data.phone);
+                $("input[name=wechat]").val(data.data.wechat);
+                $("input[name=alipay]").val(data.data.alipay);
+                if(data.data.sex==1){
+                    $("input[name=sex]").eq(0).attr("checked",true);
+                }else{
+                    $("input[name=sex]").eq(1).attr("checked",true);
+                }
+            }
+			if(data.status==3){
+				login();
+			}
+			if(data.status==2){
+					layer.open({
+					content: data.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+        }
+    })
+    $(".btnlink").click(function(){
+        var userName=$("input[name=userName]").val();
+        if(userName==''){
+            layer.open({
+                content: "请输入用户名",
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+
+        var loading = layer.open({type: 2,shadeClose:false});
+        $.ajax({
+            url:urldatalink.editUser,
+            type:"post",
+            data:{
+                userAccessToken:localStorage.getItem('userAccessToken'),
+                userName:userName,
+                phone:$("input[name=phone]").val(),
+                sex:$("input[name=sex]:checked").val()
+
+            },
+            success:function(data){
+                layer.close(loading);
+                layer.open({
+                    content: data.msg,
+                    skin: 'msg',
+                    time: 2 //2秒后自动关闭
+                });
+            }
+        })
+    });
+</script>

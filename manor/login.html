@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+	<script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+</head>
+<body class="loginbg">
+
+<div class="logintit"><img src="images/logintit.png" alt=""></div>
+
+<div class="loginform">
+    <ul>
+        <li><input type="text" placeholder="请输入手机号" name="phone"></li>
+        <li><input type="password" placeholder="请输入密码" name="password"></li>
+    </ul>
+
+    <p class="loginbtn"><a href="#"><img src="images/loginbtn.png" alt=""></a> </p>
+    <p class="forgotlink"><a href="#">忘记密码</a> </p>
+</div>
+
+
+</body>
+</html>
+<script>
+    var urldatalink = geturllink();
+    var login_phone=localStorage.getItem("login_phone");
+    var login_password=localStorage.getItem("login_password");
+    if(login_phone){
+        $("input[name=phone]").val(login_phone);
+    }else{
+        $("input[name=phone]").val('');
+    }
+    if(login_password){
+        $("input[name=password]").val(login_password);
+    }else{
+        $("input[name=password]").val('');
+    }
+    //登录
+    $(".loginbtn").click(function(){
+
+        var phone=$("input[name=phone]").val();
+        var password=$("input[name=password]").val();
+        if(phone.length==0||phone==''){
+            layer.open({
+                content: '请填写手机号',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        if(password.length==0||password==''){
+            layer.open({
+                content: '请填写密码',
+                skin: 'msg',
+                time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        var loading = layer.open({type: 2});
+        $.ajax({
+            url:urldatalink.login,
+            type:"post",
+            dataType: "json",
+            data:{phone:phone,password:password},
+            success:function(data){
+                layer.close(loading);
+                if(data.status==1){
+                    var userAccessToken=data.data.userAccessToken;
+                    localStorage.setItem('userAccessToken',userAccessToken);
+                    localStorage.setItem('login_phone',phone);
+                    localStorage.setItem('login_name',data.data.user.realName);
+                    localStorage.setItem('login_password',password);
+                    location.href ='index.html';
+                    $("input[name=phone]").val('');
+                    $("input[name=password]").val('');
+
+                }else{
+                    var tishi = layer.open({
+                        content: data.msg,
+                        skin: 'msg',
+                        time: 1
+                    });
+                    setTimeout(function(){
+                        layer.close(tishi);
+                    },2000);
+                }
+            },
+            error:function(){
+
+            }
+        })
+    });
+    //忘记密码
+    $(".forgotlink").click(function(){
+        location.href='forget.html';
+    })
+</script>

@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="layer/need/layer.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+    <script type="text/javascript" src="js/zKit.js"></script>
+    <script type="text/javascript" src="js/manor.js"></script>
+    <script type="text/javascript" src="js/port.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
+    <script type="text/javascript" src="js/signature.js"></script>
+    <script type="text/javascript" src="js/vue.js"></script>
+</head>
+<body class="bgcolor paddingtop paddingboot">
+<div class="navhead">
+    <p>首页</p>
+</div>
+
+<div class="echartsbox">
+    <div id="biaotabox">
+
+    </div>
+</div>
+
+<!--首页导航-->
+<div class="homenav">
+    <ul>
+        <li><a href="manor_home.html"><img src="images/homenav1.png" alt=""><p>我的花园</p></a></li>
+        <li><a href="javascript:;" onclick="friend()"><img src="images/homenav2.png" alt=""><p>好友花园</p></a></li>
+        <li><a href="exploit.html"><img src="images/homenav3.png" alt=""><p>开发新花园</p></a></li>
+    </ul>
+</div>
+<script>
+
+</script>
+<!--通告-->
+<div class="homenews" id="notice">
+    <h2 class="newstitle">通告</h2>
+    <ul  v-for="notice in notices">
+        <li> <a class="line1 arrright" href="javascript:;"  v-on:click="detail(notice.id)"> <span>{{ notice.time }}</span> <b>公告:{{ notice.title }}</b> </a> </li>
+    </ul>
+</div>
+
+
+<div class="footnav">
+    <ul>
+        <li class="cur">
+            <a href="#">
+                <div class="footimg">
+                    <img src="images/footnav1.png" alt="">
+                    <img src="images/footnav1_h.png" alt="">
+                </div>
+                <p>花园管理</p>
+            </a>
+        </li>
+        <li>
+            <a href="growth.html">
+                <div class="footimg">
+                    <img src="images/footnav2.png" alt="">
+                    <img src="images/footnav2_h.png" alt="">
+                </div>
+                <p>生长记录</p>
+            </a>
+        </li>
+        <li>
+            <a href="bargain.html">
+                <div class="footimg">
+                    <img src="images/footnav3.png" alt="">
+                    <img src="images/footnav3_h.png" alt="">
+                </div>
+                <p>交易中心</p>
+            </a>
+        </li>
+        <li>
+            <a href="mycenter.html">
+                <div class="footimg">
+                    <img src="images/footnav4.png" alt="">
+                    <img src="images/footnav4_h.png" alt="">
+                </div>
+                <p>个人中心</p>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+<script>
+    var userAccessToken = localStorage.getItem('userAccessToken');
+    if(userAccessToken) {
+    }else {
+        location.href ='login.html';
+    }
+    var urldatalink = geturllink();
+
+    //获取公告
+    var vm=new Vue({
+        el:"#notice",
+        data:{notices:[]},
+        methods:{
+            detail:function(id){
+                localStorage.setItem('notice_id',id);
+                location.href="notice.html";
+            }
+        }
+    })
+    var loading = layer.open({type: 2});
+        $.ajax({
+            url:urldatalink.notice,
+            type:"get",
+            success:function(data){
+                if(data.status==1){
+                    layer.close(loading)
+                    vm.notices=data.data;
+                }
+				if(data.status==3){
+				login();
+			}
+			if(data.status==2){
+					layer.open({
+					content: data.msg,
+					skin: 'msg',
+					time: 2, //2秒后自动关闭
+					end:function(){
+						location.href="login.html";
+						}
+					});
+				}
+            }
+        })
+
+    function friend(){
+        //判断是否订购采蜜大师
+        $.ajax({
+            url:urldatalink.isBuyHoney,
+            type:"get",
+            data:{userAccessToken:localStorage.getItem('userAccessToken')},
+            success:function(data){
+                if(data.status==1){
+                    localStorage.setItem("is_buy_honey",data.data.is_buy_code);
+                }
+                location.href="friendlist.html";
+            }
+        })
+    }
+    //图表
+    function tubiao(){
+        var myChart;
+        //设置日期，当前日期的前七天
+        var myDate = new Date(); //获取今天日期
+        myDate.setDate(myDate.getDate() - 6);
+        var dateArray = [];
+        var dateTemp;
+        var flag = 1;
+        for (var i = 0; i < 7; i++) {
+            dateTemp = (myDate.getMonth()+1)+"-"+myDate.getDate();
+            dateArray.push(dateTemp);
+            myDate.setDate(myDate.getDate() + flag);
+        }
+
+        myChart = echarts.init(document.getElementById('biaotabox'));
+
+
+        function setdata(dateArray,data_table){
+            option = {
+                title: {
+                    text: '',
+                    x: 'center',
+                    textStyle: {
+                        fontSize: 18,
+                        fontWeight: 'bolder',
+                        color: '#CFCFCE'          // 主标题文字颜色
+                    },
+                    subtext: ''
+                },
+
+                grid: {
+                    left: '2%',
+                    right: '5%',
+                    top:'6%',
+                    bottom:'15%',
+                    containLabel: true
+                },
+
+
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    left: '2%',
+                    bottom:'2%',
+                    data:['庄园花增长趋势图']
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: {readOnly: false},
+                        magicType: {type: ['line', 'bar']},
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis:  {
+                    type: 'category',
+                    boundaryGap: false,
+
+                    axisLine:{
+                        lineStyle:{
+                            color:'#363636',
+                            width:1
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            // 使用深浅的间隔色
+                            color: '#CCCCCC',
+                            type: 'solid'
+                        }
+                    },
+                    textStyle: {
+                        color: '#CFCFCE',
+                        fontSize:18
+                    },
+                    data: dateArray
+                },
+                yAxis: {
+                    type: 'value',
+                    splitNumber:8,
+                    splitLine: {
+                        lineStyle: {
+                            // 使用深浅的间隔色
+                            color: '#CCCCCC',
+                            type: 'solid'
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color:'#363636',
+                            width:0
+                        }
+                    },
+
+                    axisLabel: {
+                        formatter: '{value}'+'%'
+                    }
+                },
+
+                series: [
+
+                    {
+                        name:'庄园花增长趋势图',
+                        type:'line',
+                        data:data_table,
+                        symbol:'circle',
+                        symbolSize:'8',
+                        itemStyle : {
+                            normal : {
+                                color:'#EE83AE',
+                                lineStyle:{
+                                    width: 2,
+                                    color:'#EE83AE'
+                                }
+                            }
+                        },
+
+
+                        markLine: {
+                            data: [
+                                {type: 'average', name: '平均值'},
+                                [{
+                                    symbol: 'none',
+                                    x: '90%',
+                                    yAxis: 'max'
+                                }, {
+                                    symbol: 'circle',
+                                    label: {
+                                        normal: {
+                                            position: 'start',
+                                            formatter: '最大值'
+                                        }
+                                    },
+                                    type: 'max',
+                                    name: '最高点'
+                                }]
+                            ]
+                        }
+                    }
+
+
+                ]
+            };
+            return option
+        }
+        //获取数据
+        var arr=new Array();
+        $.ajax({
+            url:urldate.static,
+            type:"get",
+            data:{userAccessToken:localStorage.getItem('userAccessToken')},
+            success:function(data){
+                if(data.status==1){
+                    $.each(data.data,function(a,b){
+                        if(b==null){
+                            b=0;
+                        }
+                        arr.push((b*100).toFixed(3));
+                    });
+                    myChart.setOption(setdata(dateArray,arr));
+                }else{
+                    myChart.setOption(setdata(dateArray,[0,0,0,0,0,0,0]));
+                }
+            }
+        })
+    }
+    tubiao();
+
+
+
+</script>
+</body>
+</html>

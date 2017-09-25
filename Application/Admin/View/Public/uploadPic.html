@@ -1,0 +1,41 @@
+<div id="queue"></div>
+<input type="file" id="pic_upload" name="pic_upload" />
+<script type="text/javascript">
+	$(function() {
+			$('#pic_upload').uploadify({
+				'formData'     : {},
+				//'fileObjName'   : "picture",
+				'swf'      : '__PUBLIC__/Static/uploadify/uploadify.swf',
+				'uploader' : "{:U('UploadFile/picture')}",
+				"buttonText"    : "上传图片",
+				'auto'			: true, //自动上传
+				'debug'			:false,//开启调试模式
+				'fileSizeLimit'	:0,	//上传大小限制
+				'uploadLimit'	:10,//上传文件数量限制
+				'fileTypeExts'	:'*.jpg;*.png;*.jpeg',//文件上传格式
+				'multi'			:false,//单文件上传
+				'width'			:120,//按钮宽度
+				'height'		:30,//按钮高度
+				'removeCompleted' : true,
+				'debug'			:false,
+				'onFallback'	:function(){
+					alert('flash版本不支持');
+				},//当flash版本不支持时
+				
+				'onUploadSuccess' : function(file, data, response) {
+					var data = $.parseJSON(data);
+					if(data.status==1){
+						$('input[name="thumb"]').val(data['info']['savepath']+data['info']['savename']);
+						$('#showthumb').html('<img src="__ROOT__/Uploads/images/'+data['info']['savepath']+data['info']['savename']+'">');
+					} else {
+						alert(data.info);
+					}	
+				},//一个文件上传成功时
+				'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+					alert(errorMsg);
+				},//文件上传失败触发
+ 
+				
+			});
+		});
+</script>

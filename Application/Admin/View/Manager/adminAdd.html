@@ -1,0 +1,127 @@
+<extend name="Public:base" />
+
+<!-- 标题 -->
+<block name="title"><title>添加管理员</title></block>
+<!-- 面包屑导航 -->
+<block name="navigation">
+<section class="content-header">
+	<h1>添加管理员<small></small></h1>
+	<ol class="breadcrumb">
+		<li><a href="{:U('Index/index')}"><i class="fa fa-dashboard"></i> 主页</a></li>
+		<li class="active">管理员管理</li>
+	</ol>
+</section>
+</block> 
+
+<!-- 内容 -->
+<block name="content">
+<!-- Custom Tabs -->
+<div class="nav-tabs-custom">
+	
+	<ul class="nav nav-tabs">
+		<li><a href="{:U('Manager/adminList')}">管理员列表</a></li>
+		<li class="active"><a href="#tab_1" data-toggle="tab">添加管理员</a></li>
+	</ul>
+	
+	<div class="tab-content">
+		<div class="tab-pane active" id="tab_1" style="max-width:800px;">
+			 
+				<form role="form" action="{:U('Manager/adminSave')}" id="form-add">
+					<input type="hidden" name="id" value="0"/>
+					<div class="form-group">
+						<label>角色<font color='red'>*</font></label>
+						<select class="form-control" name="group" style="width:150px;">
+							<option value="0">请选择角色</option>
+							<foreach name="groups" item="v">
+								<option value="{$v.id}">{$v.title}</option>
+							</foreach>
+						</select>
+
+					</div>
+					
+					<div class="form-group">
+						<label for="username">登录账号<font color='red'>*</font></label>
+						<input type="text" class="form-control" id="username" name="username" autocomplete="off" placeholder="登录账号" style="width:250px;">
+					</div>
+					<div class="form-group">
+						<label for="mobile">手机号码</label>
+						<input type="text" class="form-control" id="mobile" name="mobile" autocomplete="off" placeholder="手机号码" style="width:250px;">
+					</div>
+					 
+					<div class="form-group">
+						<label for="email">电子邮箱</label>
+						<input type="email" class="form-control" id="email" name="email" autocomplete="off" placeholder="电子邮箱" style="width:250px;">
+					</div>
+					<div class="form-group">
+						<label for="password">登录密码<font color='red'>*</font></label>
+						<input type="text" class="form-control" id="password" name="password" autocomplete="off" placeholder="密码" style="width:250px;">
+					</div>	
+
+					<div class="form-group">
+						<label>
+							<input type="radio" name="status" id="status1" value="1" class="flat-red" checked> 正常
+						</label>
+						<label>
+							<input type="radio" name="status" id="status2" class="flat-red" value="0"> 禁用
+						</label>
+					</div>
+					
+					<button class="btn btn-success" type="submit">保存</button>	 
+				</form>
+			 
+		  
+		</div><!-- /.tab-pane -->
+ 
+	</div><!-- /.tab-content -->
+</div><!-- nav-tabs-custom -->
+ 
+
+</block>
+
+<!-- js -->
+<block name="js">
+ 	
+	<script type="text/javascript">
+		$(function () {
+			 
+		});
+  
+		//表单提交
+    	$(document)
+	    	.ajaxStart(function(){
+	    		$("button:submit").addClass("btn-default").removeClass('btn-primary').attr("disabled", true);
+	    	})
+	    	.ajaxStop(function(){
+	    		$("button:submit").removeClass("btn-default").addClass("btn-primary").attr("disabled", false);
+	    	});
+
+    	$("form").submit(function(){
+			 
+    		var self = $(this);
+    		$.post(self.attr("action"), self.serialize(), success, "json");
+    		return false;
+
+    		function success(data){
+    			if(data.status){
+    				layer.msg(data.msg, {
+						icon:1,
+						offset: 0,
+						shift: 0,
+						time:1500
+					},function(){
+						window.location.reload();//刷新当前页面 ;
+					});
+    			} else {
+    				layer.msg(data.msg, {
+						icon:0,
+						offset: 0,
+						shift: 6,
+						time:1500
+					}); 
+    				 
+    			}
+    		}
+    	});
+	</script>
+
+</block>
